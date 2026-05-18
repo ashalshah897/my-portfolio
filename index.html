@@ -4,19 +4,28 @@
     <meta charset="UTF-8">
     <title>Syed Raza | DevOps Portfolio</title>
     <style>
-        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .card { background: #1e293b; padding: 40px; border-radius: 16px; border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 500px; width: 100%; text-align: center; }
-        h1 { color: #38bdf8; margin-bottom: 5px; }
-        .role { color: #94a3b8; font-weight: 500; margin-bottom: 20px; display: block; }
-        .skills-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
-        .skill-badge { background: #0ea5e9; color: white; padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; }
-        #status { font-size: 0.8rem; margin-top: 20px; color: #10b981; }
+        body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 600px; width: 100%; text-align: left; }
+        h1 { color: #38bdf8; text-align: center; margin-bottom: 5px; }
+        .role { color: #94a3b8; text-align: center; display: block; margin-bottom: 20px; font-weight: bold; }
+        p.summary { font-size: 0.95rem; color: #cbd5e1; line-height: 1.5; border-bottom: 1px solid #334155; padding-bottom: 15px; }
+        .skills-container { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
+        .skill-badge { background: #0ea5e9; color: white; padding: 4px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; }
+        h3 { color: #38bdf8; font-size: 1.1rem; margin-top: 20px; }
+        ul { padding-left: 20px; color: #94a3b8; font-size: 0.9rem; }
+        li { margin-bottom: 8px; }
+        #status { font-size: 0.8rem; text-align: center; margin-top: 20px; color: #10b981; }
     </style>
 </head>
 <body>
     <div class="card">
         <h1 id="name">Loading...</h1>
-        <span class="role" id="role">Fetching Profile...</span>
+        <span class="role" id="role">Fetching...</span>
+        <p class="summary" id="summary"></p>
+        
+        <h3>Key Projects & Experience</h3>
+        <ul id="projects"></ul>
+
         <div class="skills-container" id="skills"></div>
         <p id="status">● Backend Connected</p>
     </div>
@@ -27,6 +36,15 @@
             .then(data => {
                 document.getElementById('name').innerText = data.name;
                 document.getElementById('role').innerText = data.role;
+                document.getElementById('summary').innerText = data.summary;
+                
+                const projUl = document.getElementById('projects');
+                data.projects.forEach(p => {
+                    let li = document.createElement('li');
+                    li.innerText = p;
+                    projUl.appendChild(li);
+                });
+
                 const skillsDiv = document.getElementById('skills');
                 data.skills.forEach(skill => {
                     let span = document.createElement('span');
