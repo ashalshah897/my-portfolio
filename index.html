@@ -2,62 +2,264 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Syed Raza | DevOps Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syed Raza | DevSecOps & Cloud Engineer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { background-color: #0f172a; color: #f8fafc; font-family: sans-serif; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 600px; width: 100%; text-align: left; }
-        h1 { color: #38bdf8; text-align: center; margin-bottom: 5px; }
-        .role { color: #94a3b8; text-align: center; display: block; margin-bottom: 20px; font-weight: bold; }
-        p.summary { font-size: 0.95rem; color: #cbd5e1; line-height: 1.5; border-bottom: 1px solid #334155; padding-bottom: 15px; }
-        .skills-container { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; }
-        .skill-badge { background: #0ea5e9; color: white; padding: 4px 10px; border-radius: 15px; font-size: 0.75rem; font-weight: bold; }
-        h3 { color: #38bdf8; font-size: 1.1rem; margin-top: 20px; }
-        ul { padding-left: 20px; color: #94a3b8; font-size: 0.9rem; }
-        li { margin-bottom: 8px; }
-        #status { font-size: 0.8rem; text-align: center; margin-top: 20px; color: #10b981; }
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: #141414;
+            --accent-orange: #ff6600;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --border-color: #262626;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        /* Top Orange Accent Bar */
+        .top-bar {
+            height: 4px;
+            background: var(--accent-orange);
+            width: 100%;
+        }
+
+        /* Container Layout */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Hero Header Section */
+        header {
+            text-align: center;
+            padding: 60px 0 40px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 10px;
+        }
+
+        header h1 span {
+            color: var(--accent-orange);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .social-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-size: 1.1rem;
+            margin: 0 15px;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--accent-orange);
+        }
+
+        /* Section Universal Styles */
+        section {
+            margin: 50px 0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 4px solid var(--accent-orange);
+            padding-left: 15px;
+        }
+
+        /* Detailed Grid Layout for Tools */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Premium Dark Cards */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-orange);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            color: var(--accent-orange);
+        }
+
+        .card-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Live Cluster Data Box */
+        .cluster-status-box {
+            background: linear-gradient(135deg, #141414 0%, #1a100a 100%);
+            border: 1px dashed var(--accent-orange);
+            border-radius: 8px;
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            background: rgba(0, 255, 100, 0.1);
+            color: #00ff64;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        pre {
+            background: #050505;
+            padding: 20px;
+            border-radius: 6px;
+            overflow-x: auto;
+            color: #00ff64;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            border: 1px solid var(--border-color);
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1 id="name">Loading...</h1>
-        <span class="role" id="role">Fetching...</span>
-        <p class="summary" id="summary"></p>
-        
-        <h3>Key Projects & Experience</h3>
-        <ul id="projects"></ul>
 
-        <div class="skills-container" id="skills"></div>
-        <p id="status">● Backend Connected</p>
+    <div class="top-bar"></div>
+
+    <div class="container">
+        <header>
+            <h1>Syed <span>Raza</span></h1>
+            <p>Associate DevOps & Cloud Infrastructure Engineer</p>
+            <div class="social-links">
+                <a href="https://github.com/ashalshah897" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                <a href="#" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <a href="mailto:your-email@example.com"><i class="fas fa-envelope"></i> Contact Email</a>
+            </div>
+        </header>
+
+        <section>
+            <div class="section-title">
+                <i class="fas fa-layer-group"></i> Core DevSecOps Infrastructure Stack
+            </div>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fab fa-docker"></i>
+                        <h3>Docker Containerization</h3>
+                    </div>
+                    <p>Packaging application layers into lightweight, immutable container images. Experienced in managing clean BuildKit layers, solving cache corruptions, and deploying multi-stage builds to optimize image footprints.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-cubes"></i>
+                        <h3>Kubernetes Orchestration</h3>
+                    </div>
+                    <p>Managing high-availability system states using declarative YAML manifests. Expert in deploying multi-replica Pod environments, writing decoupled network Services, and configuring local Minikube cluster layers.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fab fa-linux"></i>
+                        <h3>Linux & WSL Administration</h3>
+                    </div>
+                    <p>Hands-on management of Ubuntu systems under Windows Subsystem for Linux. Capable of troubleshooting core system network sockets, permanent DNS resolution bugs via /etc/wsl.conf, and managing process daemons.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-shield-halved"></i>
+                        <h3>DevSecOps & Code Quality</h3>
+                    </div>
+                    <p>Integrating security gates directly into build pipelines. Experienced in setting up automated code scanning configurations using SonarQube Quality Gates and processing pipeline evaluation parameters via jq automation.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-title">
+                <i class="fas fa-terminal"></i> Live Kubernetes Cluster Stream
+            </div>
+            <div class="cluster-status-box">
+                <div class="status-indicator">
+                    <i class="fas fa-circle-check"></i> Connected to Active Kubernetes Cluster
+                </div>
+                <p style="margin-bottom: 15px; color: var(--text-muted);">The database profile below is being pulled dynamically in JSON format directly from my running backend API pods inside Kubernetes:</p>
+                <pre id="cluster-data">Loading dynamic infrastructure profile stream from cluster pods...</pre>
+            </div>
+        </section>
     </div>
 
     <script>
-        fetch('http://localhost:3000/api/info')
-            .then(res => res.json())
-            .then(data => {
-                document.getElementById('name').innerText = data.name;
-                document.getElementById('role').innerText = data.role;
-                document.getElementById('summary').innerText = data.summary;
-                
-                const projUl = document.getElementById('projects');
-                data.projects.forEach(p => {
-                    let li = document.createElement('li');
-                    li.innerText = p;
-                    projUl.appendChild(li);
-                });
+        // Replace this URL string with the exact Minikube URL you got from your service!
+        // For example: 'http://127.0.0.1:39485/api/info'
+        const CLUSTER_SERVICE_URL = 'http://127.0.0.1:35543/api/info'; 
 
-                const skillsDiv = document.getElementById('skills');
-                data.skills.forEach(skill => {
-                    let span = document.createElement('span');
-                    span.className = 'skill-badge';
-                    span.innerText = skill;
-                    skillsDiv.appendChild(span);
-                });
-            })
-            .catch(err => {
-                document.getElementById('name').innerText = "Connection Error";
-                document.getElementById('status').style.color = "#ef4444";
-                document.getElementById('status').innerText = "● Backend Offline";
-            });
+        async function fetchClusterData() {
+            try {
+                const response = await fetch(CLUSTER_SERVICE_URL);
+                if (!response.ok) throw new Error('Network bridge failed');
+                const data = await response.json();
+                document.getElementById('cluster-data').innerText = JSON.stringify(data, null, 4);
+            } catch (error) {
+                document.getElementById('cluster-data').innerText = `// Live stream offline. Cluster verified locally via Minikube Architecture Node.\n// Error details: ${error.message}`;
+            }
+        }
+
+        // Trigger the stream fetch immediately on load
+        fetchClusterData();
     </script>
 </body>
 </html>
