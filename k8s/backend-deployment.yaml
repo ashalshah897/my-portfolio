@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portfolio-backend
+  labels:
+    app: portfolio-backend
+spec:
+  replicas: 2  # This keeps TWO copies running for safety!
+  selector:
+    matchLabels:
+      app: portfolio-backend
+  template:
+    metadata:
+      labels:
+        app: portfolio-backend
+    spec:
+      containers:
+      - name: backend
+        image: docker.io/ashalraza12/portfolio-backend:v1  # Your exact cloud image!
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
