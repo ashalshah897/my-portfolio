@@ -1,0 +1,38 @@
+name: Deploy Portfolio Website to AWS EC2
+
+on:
+  push:
+    branches:
+      - main  # Jab bhi main branch par code push hoga, pipeline active ho jayegi
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository Code
+      uses: actions/checkout@v3
+
+    - name: Deploy Code to AWS Server via SSH Secure Tunnel
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_KEY }}
+        port: 22
+        script: |
+          echo "🚀 Connecting to AWS EC2 Instance via GitHub Actions..."
+          cd /var/www/portfolio-app
+          
+          echo "🔄 Fetching latest code updates from GitHub Repository..."
+          git pull origin main
+          
+          echo "📦 Refreshing Backend Dependencies..."
+          cd backend
+          npm install --production
+          
+          echo "♻️ Restarting Application Engine with PM2..."
+          pm2 restart portfolio-backend || pm2 start index.js --name "portfolio-backend"
+          pm2 save
+          
+          echo "🎉 Automated CD Deployment Successful!"
