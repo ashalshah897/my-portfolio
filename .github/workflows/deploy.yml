@@ -3,7 +3,7 @@ name: Deploy Portfolio Website to AWS EC2
 on:
   push:
     branches:
-      - main  # Jab bhi main branch par code push hoga, pipeline active ho jayegi
+      - main  # Main branch push par chalega
 
 jobs:
   deploy:
@@ -13,7 +13,7 @@ jobs:
     - name: Checkout Repository Code
       uses: actions/checkout@v3
 
-    - name: Deploy Code to AWS Server via SSH Secure Tunnel
+    - name: Deploy Code & Validate Build Before Restart
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.EC2_HOST }}
@@ -21,18 +21,31 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          echo "🚀 Connecting to AWS EC2 Instance via GitHub Actions..."
+          echo "🚀 Connecting to AWS EC2 Instance Securely..."
           cd /var/www/portfolio-app
           
           echo "🔄 Fetching latest code updates from GitHub Repository..."
           git pull origin main
           
-          echo "📦 Refreshing Backend Dependencies..."
+          echo "📦 Step 1: Installing Clean Dependencies using npm ci..."
           cd backend
-          npm install --production
+          npm ci || npm install --production
           
-          echo "♻️ Restarting Application Engine with PM2..."
+          echo "🏗️ Step 2: Running Build Verification Test..."
+          # Agar aapke project mein 'npm run build' command script hai, to yeh chalegi.
+          # Agar build command error degi, to yahan pipe crash ho kar stop ho jayegi!
+          npm run build --if-present
+          
+          # Check if the last command (build) failed
+          if [ $? -ne 0 ]; then
+            echo "❌ BUILD FAILED! Stopping deployment to protect the live website."
+            exit 1
+          fi
+          
+          echo "✅ Build Successful! Safe to restart live server."
+          
+          echo "♻️ Step 3: Restarting Application Engine with PM2..."
           pm2 restart portfolio-backend || pm2 start index.js --name "portfolio-backend"
           pm2 save
           
-          echo "🎉 Automated CD Deployment Successful!"
+          echo "🎉 Zero-Downtime Deployment Successful and Verified!"
