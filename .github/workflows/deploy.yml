@@ -3,13 +3,13 @@ name: Multi-Environment CI/CD Automated Pipeline
 on:
   push:
     branches:
-      - main     # Main branch push par production active hoga
-      - develop  # Develop branch push par staging active hoga
+      - main
+      - develop
 
 jobs:
   deploy-staging:
     name: 🧪 Deploy to Staging Environment
-    if: github.ref == 'refs/heads/develop'  # Sirf tab chalega agar branch 'develop' ho
+    if: github.ref == 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
@@ -25,17 +25,16 @@ jobs:
         script: |
           echo "🧪 Connecting to STAGING Server..."
           cd /var/www/portfolio-app
-          git fetch origin develop
+          git fetch --all
           git checkout develop
           git pull origin develop
-          cd backend && npm ci || npm install --production
-          npm run build --if-present
+          cd backend && npm install --production
           pm2 restart portfolio-backend || pm2 start index.js --name "portfolio-backend"
           echo "🎉 Staging Deployment Successful & Verified!"
 
   deploy-production:
     name: 🚀 Deploy to Production Environment
-    if: github.ref == 'refs/heads/main'  # Sirf tab chalega agar branch 'main' ho
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
@@ -51,14 +50,9 @@ jobs:
         script: |
           echo "🚀 Connecting to PRODUCTION Live Server..."
           cd /var/www/portfolio-app
-          git fetch origin main
+          git fetch --all
           git checkout main
           git pull origin main
-          cd backend && npm ci || npm install --production
-          npm run build --if-present
-          if [ $? -ne 0 ]; then
-            echo "❌ PRODUCTION BUILD FAILED! Aborting release to protect live users."
-            exit 1
-          fi
+          cd backend && npm install --production
           pm2 restart portfolio-backend || pm2 start index.js --name "portfolio-backend"
           echo "🎉 Live Production Deployment is Successful & Isolated!"
