@@ -1,19 +1,47 @@
-name: Deploy Portfolio Website to AWS EC2
+name: Multi-Environment CI/CD Automated Pipeline
 
 on:
   push:
     branches:
-      - main  # Main branch push par chalega
+      - main     # Main branch push par production active hoga
+      - develop  # Develop branch push par staging active hoga
 
 jobs:
-  deploy:
+  deploy-staging:
+    name: 🧪 Deploy to Staging Environment
+    if: github.ref == 'refs/heads/develop'  # Sirf tab chalega agar branch 'develop' ho
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Repository Code
+    - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Deploy Code & Validate Build Before Restart
+    - name: Run Secure Staging Deployment
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.STAGING_EC2_HOST }}
+        username: ${{ secrets.STAGING_EC2_USERNAME }}
+        key: ${{ secrets.STAGING_EC2_SSH_KEY }}
+        port: 22
+        script: |
+          echo "🧪 Connecting to STAGING Server..."
+          cd /var/www/portfolio-app
+          git fetch origin develop
+          git checkout develop
+          git pull origin develop
+          cd backend && npm ci || npm install --production
+          npm run build --if-present
+          pm2 restart portfolio-backend || pm2 start index.js --name "portfolio-backend"
+          echo "🎉 Staging Deployment Successful & Verified!"
+
+  deploy-production:
+    name: 🚀 Deploy to Production Environment
+    if: github.ref == 'refs/heads/main'  # Sirf tab chalega agar branch 'main' ho
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Run Secure Production Deployment with Build Validation
       uses: appleboy/ssh-action@v0.1.10
       with:
         host: ${{ secrets.EC2_HOST }}
@@ -21,31 +49,16 @@ jobs:
         key: ${{ secrets.EC2_SSH_KEY }}
         port: 22
         script: |
-          echo "🚀 Connecting to AWS EC2 Instance Securely..."
+          echo "🚀 Connecting to PRODUCTION Live Server..."
           cd /var/www/portfolio-app
-          
-          echo "🔄 Fetching latest code updates from GitHub Repository..."
+          git fetch origin main
+          git checkout main
           git pull origin main
-          
-          echo "📦 Step 1: Installing Clean Dependencies using npm ci..."
-          cd backend
-          npm ci || npm install --production
-          
-          echo "🏗️ Step 2: Running Build Verification Test..."
-          # Agar aapke project mein 'npm run build' command script hai, to yeh chalegi.
-          # Agar build command error degi, to yahan pipe crash ho kar stop ho jayegi!
+          cd backend && npm ci || npm install --production
           npm run build --if-present
-          
-          # Check if the last command (build) failed
           if [ $? -ne 0 ]; then
-            echo "❌ BUILD FAILED! Stopping deployment to protect the live website."
+            echo "❌ PRODUCTION BUILD FAILED! Aborting release to protect live users."
             exit 1
           fi
-          
-          echo "✅ Build Successful! Safe to restart live server."
-          
-          echo "♻️ Step 3: Restarting Application Engine with PM2..."
           pm2 restart portfolio-backend || pm2 start index.js --name "portfolio-backend"
-          pm2 save
-          
-          echo "🎉 Zero-Downtime Deployment Successful and Verified!"
+          echo "🎉 Live Production Deployment is Successful & Isolated!"
